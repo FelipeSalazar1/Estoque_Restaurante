@@ -8,11 +8,11 @@ public class DatabaseConnection {
     private static DatabaseConnection instance;
     private Connection connection;
 
-    private DatabaseConnection() {
+    public DatabaseConnection() {
         try {
-            String url = "jdbc:sqlite:database.db";
-            String user = "root";
-            String password = "root";
+            String url = "jdbc:oracle:thin:@localhost:1521:xe";
+            String user = "RM553464";
+            String password = "251104";
             connection = DriverManager.getConnection(url, user, password);
         } catch (SQLException e) {
             e.printStackTrace();
