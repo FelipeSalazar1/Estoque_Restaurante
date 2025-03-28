@@ -2,6 +2,7 @@ package br.com.restaurante.DAO;
 
 import br.com.restaurante.entities.Estoque;
 import br.com.restaurante.entities.Produto;
+import br.com.restaurante.exceptions.EstoqueException;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public class EstoqueDAOImpl implements EstoqueDAO {
             ps.setInt(2, quantidade);
             ps.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao adicionar registro no estoque", e);
+            throw new EstoqueException("Erro ao adicionar registro no estoque", e);
         }
     }
 
@@ -43,7 +44,7 @@ public class EstoqueDAOImpl implements EstoqueDAO {
                 }
             }
         }catch (SQLException e) {
-            throw new RuntimeException("Erro ao adicionar produto", e);
+            throw new EstoqueException("Erro ao adicionar produto", e);
         }
     }
 
@@ -65,20 +66,20 @@ public class EstoqueDAOImpl implements EstoqueDAO {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar estoque por ID", e);
+            throw new EstoqueException("Erro ao buscar estoque por ID", e);
         }
         return null;
     }
 
     @Override
-    public void atualizar(Estoque estoque) {
+    public void atualizar(Estoque estoque, int quantidade) {
         String sqlUpdate = "UPDATE estoque SET quantidade = ? WHERE id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sqlUpdate)) {
-            ps.setInt(1, estoque.getQuantidade());
+            ps.setInt(1, quantidade);
             ps.setInt(2, estoque.getId());
             ps.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao atualizar estoque", e);
+            throw new EstoqueException("Erro ao atualizar estoque", e);
         }
     }
 
@@ -89,7 +90,7 @@ public class EstoqueDAOImpl implements EstoqueDAO {
             ps.setInt(1, id);
             ps.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao deletar estoque", e);
+            throw new EstoqueException("Erro ao deletar estoque", e);
         }
     }
 
@@ -111,7 +112,7 @@ public class EstoqueDAOImpl implements EstoqueDAO {
                 estoques.add(estoque);
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar todos os registros de estoque", e);
+            throw new EstoqueException("Erro ao buscar todos os registros de estoque", e);
         }
         return estoques;
     }

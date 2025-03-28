@@ -45,7 +45,7 @@ public class GerenciarEstoque {
         Estoque estoque = buscarEstoquePorId(id);
         if (estoque != null) {
             estoque.setQuantidade(novaQuantidade);
-            estoqueDAO.atualizar(estoque);
+            estoqueDAO.atualizar(estoque, novaQuantidade);
             System.out.println("Quantidade atualizada com sucesso!");
         }
     }

@@ -13,11 +13,9 @@ public class Main {
 
         gerenciarEstoque.adicionarProdutoNoEstoque(produto, 10);
 
-        gerenciarEstoque.atualizarQuantidadeEstoque(1, 15);
+        gerenciarEstoque.atualizarQuantidadeEstoque(6, 15);
 
-        gerenciarEstoque.listarTodosOsProdutos();
-
-        gerenciarEstoque.removerEstoque(2);
+        gerenciarEstoque.removerEstoque(5);
 
         gerenciarEstoque.listarTodosOsProdutos();
     }

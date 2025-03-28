@@ -9,7 +9,7 @@ public interface EstoqueDAO {
     void adicionarRegistro(Produto produto, int quantidade);
     void adicionarProduto(Produto produto);
     Estoque buscarPorId(int id);
-    void atualizar(Estoque estoque);
+    void atualizar(Estoque estoque, int quantidade);
     void deletar(int id);
     List<Estoque> buscarTodos();
 }
