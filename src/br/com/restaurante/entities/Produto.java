@@ -6,7 +6,6 @@ public class Produto {
     private String descricao;
     private String categoria;
 
-    // Construtor com ID
     public Produto(int id, String nome, String descricao, String categoria) {
         this.id = id;
         this.nome = nome;
@@ -14,7 +13,6 @@ public class Produto {
         this.categoria = categoria;
     }
 
-    // Construtor sem ID (para novos produtos)
     public Produto(String nome, String descricao, String categoria) {
         this.nome = nome;
         this.descricao = descricao;
@@ -39,5 +37,16 @@ public class Produto {
 
     public String getCategoria() {
         return categoria;
+    }
+
+    public void setNome(String produtoAEditado) {
+    }
+
+    public void setDescricao(String descriçãoEditada) {
+
+    }
+
+    public void setCategoria(String categoriaEditada) {
+
     }
 }

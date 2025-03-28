@@ -1,6 +1,7 @@
 package br.com.restaurante.services;
 
 import br.com.restaurante.DAO.EstoqueDAOImpl;
+import br.com.restaurante.DAO.ProdutoDAOImpl;
 import br.com.restaurante.database.DatabaseConnection;
 import br.com.restaurante.entities.Estoque;
 import br.com.restaurante.entities.Produto;
@@ -11,6 +12,7 @@ import java.util.List;
 
 public class GerenciarEstoque {
     private EstoqueDAOImpl estoqueDAO;
+    private ProdutoDAOImpl produtoDAO;
 
     public GerenciarEstoque() {
         DatabaseConnection databaseConnection = new DatabaseConnection();
@@ -19,17 +21,11 @@ public class GerenciarEstoque {
     }
 
     public void adicionarProdutoNoEstoque(Produto produto, int quantidade) {
-        System.out.println("Adicionando produto ao estoque...");
+        System.out.println("Adicionando produto: " + produto.getNome() + " ao estoque...");
         estoqueDAO.adicionarRegistro(produto, quantidade);
         System.out.println("Produto adicionado com sucesso!");
     }
 
-    public Produto adicionarNovoProduto(String nome, String descricao, String categoria) {
-        Produto produto = new Produto(nome, descricao, categoria);
-        estoqueDAO.adicionarProduto(produto);
-        System.out.println("Novo produto cadastrado com sucesso: " + produto.getNome());
-        return produto;
-    }
 
     public Estoque buscarEstoquePorId(int id) {
         Estoque estoque = estoqueDAO.buscarPorId(id);
@@ -67,6 +63,7 @@ public class GerenciarEstoque {
                         " | Produto: " + estoque.getProduto().getNome() +
                         " | Quantidade: " + estoque.getQuantidade());
             }
+            estoques.clear();
         }
     }
 }

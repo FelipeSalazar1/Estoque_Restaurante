@@ -17,7 +17,20 @@ public class EstoqueDAOImpl implements EstoqueDAO {
 
     @Override
     public void adicionarRegistro(Produto produto, int quantidade) {
-        String sqlInsert = "INSERT INTO estoque (id_produto, quantidade) VALUES (?, ?)";
+
+        String verificaProdutoSQL = "SELECT COUNT(*) FROM produto WHERE id = ?";
+        try (PreparedStatement ps = conn.prepareStatement(verificaProdutoSQL)) {
+            ps.setInt(1, produto.getId());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next() && rs.getInt(1) == 0) {
+                    throw new EstoqueException("Produto com ID " + produto.getId() + " não existe na tabela produto.");
+                }
+            }
+        } catch (SQLException e) {
+            throw new EstoqueException("Erro ao verificar produto no estoque", e);
+        }
+
+        String sqlInsert = "INSERT INTO estoque (produto_id, quantidade) VALUES (?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(sqlInsert)) {
             ps.setInt(1, produto.getId());
             ps.setInt(2, quantidade);
@@ -27,33 +40,16 @@ public class EstoqueDAOImpl implements EstoqueDAO {
         }
     }
 
-    @Override
-    public void adicionarProduto(Produto produto) {
-        String sqlInsert = "INSERT INTO produto (nome, descricao, categoria) VALUES (?, ?, ?)";
-        try (PreparedStatement ps = conn.prepareStatement(sqlInsert, new String[] {"ID"})) {
-            ps.setString(1, produto.getNome());
-            ps.setString(2, produto.getDescricao());
-            ps.setString(3, produto.getCategoria());
-            ps.executeUpdate();
 
-            try (ResultSet rs = ps.getGeneratedKeys()) {
-                if (rs.next()) {
-                    int idGerado = rs.getInt(1);  // Agora o ID é gerado corretamente
-                    produto.setId(idGerado);
-                    System.out.println("Produto inserido com ID: " + idGerado);
-                }
-            }
-        }catch (SQLException e) {
-            throw new EstoqueException("Erro ao adicionar produto", e);
-        }
-    }
+
 
     @Override
     public Estoque buscarPorId(int id) {
         String sql = "SELECT e.id, e.quantidade, p.id AS produto_id, p.nome, p.descricao, p.categoria " +
-                "FROM estoque e INNER JOIN produto p ON e.id_produto = p.id WHERE e.id = ?";
+                "FROM estoque e INNER JOIN produto p ON e.produto_id = p.id WHERE p.id = ?";
+
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, id);
+            ps.setInt(1, id);  // Agora o id é do produto, e não do estoque
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     Produto produto = new Produto(
@@ -66,7 +62,7 @@ public class EstoqueDAOImpl implements EstoqueDAO {
                 }
             }
         } catch (SQLException e) {
-            throw new EstoqueException("Erro ao buscar estoque por ID", e);
+            throw new EstoqueException("Erro ao buscar estoque por ID do produto", e);
         }
         return null;
     }
@@ -98,7 +94,8 @@ public class EstoqueDAOImpl implements EstoqueDAO {
     public List<Estoque> buscarTodos() {
         List<Estoque> estoques = new ArrayList<>();
         String sql = "SELECT e.id, e.quantidade, p.id AS produto_id, p.nome, p.descricao, p.categoria " +
-                "FROM estoque e INNER JOIN produto p ON e.id_produto = p.id";
+                "FROM estoque e INNER JOIN produto p ON e.produto_id = p.id";
+
         try (PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
@@ -111,9 +108,11 @@ public class EstoqueDAOImpl implements EstoqueDAO {
                 Estoque estoque = new Estoque(rs.getInt("id"), produto, rs.getInt("quantidade"));
                 estoques.add(estoque);
             }
+
         } catch (SQLException e) {
             throw new EstoqueException("Erro ao buscar todos os registros de estoque", e);
         }
+
         return estoques;
     }
 }
