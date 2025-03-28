@@ -24,10 +24,11 @@ public class GerenciarEstoque {
         System.out.println("Produto adicionado com sucesso!");
     }
 
-    public void adicionarNovoProduto(String nome, String descricao, String categoria) {
+    public Produto adicionarNovoProduto(String nome, String descricao, String categoria) {
         Produto produto = new Produto(nome, descricao, categoria);
         estoqueDAO.adicionarProduto(produto);
         System.out.println("Novo produto cadastrado com sucesso: " + produto.getNome());
+        return produto;
     }
 
     public Estoque buscarEstoquePorId(int id) {

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EstoqueDAOImpl implements EstoqueDAO {
-    private Connection conn;
+    private final Connection conn;
 
     public EstoqueDAOImpl(Connection conn) {
         this.conn = conn;
@@ -20,7 +20,7 @@ public class EstoqueDAOImpl implements EstoqueDAO {
         try (PreparedStatement ps = conn.prepareStatement(sqlInsert)) {
             ps.setInt(1, produto.getId());
             ps.setInt(2, quantidade);
-            ps.executeUpdate(); // Executa a inserção no banco
+            ps.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao adicionar registro no estoque", e);
         }
@@ -29,7 +29,7 @@ public class EstoqueDAOImpl implements EstoqueDAO {
     @Override
     public void adicionarProduto(Produto produto) {
         String sqlInsert = "INSERT INTO produto (nome, descricao, categoria) VALUES (?, ?, ?)";
-        try (PreparedStatement ps = conn.prepareStatement(sqlInsert, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement ps = conn.prepareStatement(sqlInsert, new String[] {"ID"})) {
             ps.setString(1, produto.getNome());
             ps.setString(2, produto.getDescricao());
             ps.setString(3, produto.getCategoria());
@@ -37,10 +37,12 @@ public class EstoqueDAOImpl implements EstoqueDAO {
 
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 if (rs.next()) {
-                    produto.setId(rs.getInt(1));
+                    int idGerado = rs.getInt(1);  // Agora o ID é gerado corretamente
+                    produto.setId(idGerado);
+                    System.out.println("Produto inserido com ID: " + idGerado);
                 }
             }
-        } catch (SQLException e) {
+        }catch (SQLException e) {
             throw new RuntimeException("Erro ao adicionar produto", e);
         }
     }
