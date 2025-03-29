@@ -73,16 +73,15 @@ public class ProdutoDAOImpl implements ProdutoDAO {
 
     @Override
     public void removerProduto(int produtoId) {
-        String sqlDeleteEstoque = "DELETE FROM estoque WHERE id_produto = ?";
-        try (PreparedStatement psEstoque = conn.prepareStatement(sqlDeleteEstoque)) {
-            psEstoque.setInt(1, produtoId);
-            psEstoque.executeUpdate();
+//        String sqlDeleteEstoque = "DELETE FROM estoque WHERE id_produto = ?";
+//        try (PreparedStatement psEstoque = conn.prepareStatement(sqlDeleteEstoque)) {
+//            psEstoque.setInt(1, produtoId);
+//            psEstoque.executeUpdate();
 
-            String sqlDeleteProduto = "DELETE FROM produto WHERE id = ?";
-            try (PreparedStatement psProduto = conn.prepareStatement(sqlDeleteProduto)) {
-                psProduto.setInt(1, produtoId);
-                psProduto.executeUpdate();
-            }
+        String sqlDeleteProduto = "DELETE FROM produto WHERE id = ?";
+        try (PreparedStatement psProduto = conn.prepareStatement(sqlDeleteProduto)) {
+            psProduto.setInt(1, produtoId);
+            psProduto.executeUpdate();
         } catch (SQLException e) {
             throw new ProdutoException("Erro ao remover produto e estoque", e);
         }

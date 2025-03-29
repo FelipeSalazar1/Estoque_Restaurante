@@ -22,7 +22,11 @@ public class GerenciarEstoque {
 
     public void adicionarProdutoNoEstoque(Produto produto, int quantidade) {
         System.out.println("Adicionando produto: " + produto.getNome() + " ao estoque...");
-        estoqueDAO.adicionarRegistro(produto, quantidade);
+        try{
+            estoqueDAO.adicionarRegistro(produto, quantidade);
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
         System.out.println("Produto adicionado com sucesso!");
     }
 

@@ -30,7 +30,7 @@ public class EstoqueDAOImpl implements EstoqueDAO {
             throw new EstoqueException("Erro ao verificar produto no estoque", e);
         }
 
-        String sqlInsert = "INSERT INTO estoque (produto_id, quantidade) VALUES (?, ?)";
+        String sqlInsert = "INSERT INTO estoque (id_produto, quantidade) VALUES (?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(sqlInsert)) {
             ps.setInt(1, produto.getId());
             ps.setInt(2, quantidade);
@@ -45,15 +45,15 @@ public class EstoqueDAOImpl implements EstoqueDAO {
 
     @Override
     public Estoque buscarPorId(int id) {
-        String sql = "SELECT e.id, e.quantidade, p.id AS produto_id, p.nome, p.descricao, p.categoria " +
-                "FROM estoque e INNER JOIN produto p ON e.produto_id = p.id WHERE p.id = ?";
+        String sql = "SELECT e.id, e.quantidade, p.id AS id_produto, p.nome, p.descricao, p.categoria " +
+                "FROM estoque e INNER JOIN produto p ON e.id_produto = p.id WHERE p.id = ?";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);  // Agora o id é do produto, e não do estoque
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     Produto produto = new Produto(
-                            rs.getInt("produto_id"),
+                            rs.getInt("id_produto"),
                             rs.getString("nome"),
                             rs.getString("descricao"),
                             rs.getString("categoria")
@@ -93,14 +93,14 @@ public class EstoqueDAOImpl implements EstoqueDAO {
     @Override
     public List<Estoque> buscarTodos() {
         List<Estoque> estoques = new ArrayList<>();
-        String sql = "SELECT e.id, e.quantidade, p.id AS produto_id, p.nome, p.descricao, p.categoria " +
-                "FROM estoque e INNER JOIN produto p ON e.produto_id = p.id";
+        String sql = "SELECT e.id, e.quantidade, p.id AS id_produto, p.nome, p.descricao, p.categoria " +
+                "FROM estoque e INNER JOIN produto p ON e.id_produto = p.id";
 
         try (PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 Produto produto = new Produto(
-                        rs.getInt("produto_id"),
+                        rs.getInt("id_produto"),
                         rs.getString("nome"),
                         rs.getString("descricao"),
                         rs.getString("categoria")
